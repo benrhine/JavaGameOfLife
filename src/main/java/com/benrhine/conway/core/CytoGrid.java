@@ -30,10 +30,16 @@ public class CytoGrid {
 
             //http://stackoverflow.com/questions/3387373/fill-arrays-with-ranges-of-numbers
             List<Integer> rowsTable  = new ArrayList<Integer>();
-            int[] range1 = IntStream.iterate(1, n -> {rowsTable.add(n);return n + 1;}).limit(rows-1).toArray();
+            int[] range1 = IntStream.iterate(1, n -> {
+                rowsTable.add(n);
+                return n + 1;
+            }).limit(rows).toArray();
 
             List<Integer> colsTable  = new ArrayList<Integer>();
-            int[] range2 = IntStream.iterate(1, n -> {colsTable.add(n);return n + 1;}).limit(columns-1).toArray();
+            int[] range2 = IntStream.iterate(1, n -> {
+                colsTable.add(n);
+                return n + 1;
+            }).limit(columns).toArray();
 
             state = ArrayTable.create( rowsTable, colsTable );
         } else {
@@ -60,14 +66,13 @@ public class CytoGrid {
     public String toString() {
         Map<Integer, Map<Integer, Boolean>> rowMap = state.rowMap();
         String str = "";
-        System.out.println(rowMap);
 
-        for(int i = 0; i < rowMap.keySet().size(); i++) {
-            //str = str + rowMap.get(i).values().toString(); // ? ALIVE_CHAR : NOT_ALIVE_CHAR;
+        for(Integer key : rowMap.keySet()) {
+            for(Integer key2 : rowMap.get(key).keySet()) {
+                str = str + (rowMap.get(key).get(key2) ? ALIVE_CHAR : NOT_ALIVE_CHAR);
+            }
+            str = str + "\n";
         }
-//        state.rowMap().collect{ row ->
-//                row.value.collect{ col -> col.value ? ALIVE_CHAR : NOT_ALIVE_CHAR }.join("")
-//        }.join( "\n" );
         return str;
     }
 }

@@ -35,7 +35,7 @@ public class LifeStream {
     }
 
     public CytoGrid forward( Integer steps ) {
-        if( initialState != null ) {
+        if( initialState == null ) {
             //TODO IllegalStateException is not the best exception to be throwing
             throw new IllegalStateException( "LifeMachine must be initialized first" );
         }
@@ -69,12 +69,15 @@ public class LifeStream {
 
         CytoGrid next = new CytoGrid( rows, columns );
 
-        for( int row = 0; row < rows; row++ ) {
-            for( int col = 0; col < columns; col++ ) {
-                //next.put( row, col, sistersOfFate.nextState( grid, row, col ) );
-            }
-        }
+        for( int row = 1; row <= rows; row++ ) {
+            for( int col = 1; col <= columns; col++ ) {
+                //System.out.println(col);
+                next.getState().put( row, col, sistersOfFate.nextState( grid, row, col ) );
 
+            }
+            //System.out.println("getting here 1");
+        }
+        //System.out.println("getting here");
         return next;
     }
 }

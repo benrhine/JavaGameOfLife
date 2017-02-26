@@ -39,7 +39,6 @@ public class JavaGameOfLife {
                 String str = cmd.getOptionValue( "r" );
                 String[] size = str.split("x", 2);
                 initialGrid = cytoGridFactory.randomizedGrid(Integer.parseInt(size[0]), Integer.parseInt(size[1]));
-                System.out.println(initialGrid);
             } else if( cmd.hasOption( "f" ) ) {
                 //TOOD handle exceptions if file can't be read
                 String str = cmd.getOptionValue( "f" );
@@ -51,14 +50,13 @@ public class JavaGameOfLife {
                 exit(0);
                 return;
             }
-
-            LifeStream life = new LifeStream( sistersOfFate );
-            life.initialize( initialGrid );
-
             System.out.println("Initial Population");
             System.out.println("-----------------------");
             System.out.println(initialGrid);
             System.out.println("\n");
+
+            LifeStream life = new LifeStream( sistersOfFate );
+            life.initialize( initialGrid );
 
             CytoGrid current;
             CytoGrid previous = initialGrid;

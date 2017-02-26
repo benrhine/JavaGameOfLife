@@ -46,18 +46,28 @@ public class CytoGridFactory {
     }
 
     public CytoGrid randomizedGrid( final Integer rows, final Integer columns ) {
+        //System.out.println("randomizedGrid: " + rows + "x" + columns);
         CytoGrid grid = null;
 
         if(rows != null && columns != null) {
             grid = new CytoGrid( rows, columns );
+            //System.out.println(grid.getRows() + "x" + grid.getColumns());
+            //System.out.println(grid.getState());
 
-            for( int row = 0; row < rows; row++ ) {
-                for( int col = 0; col < columns; col++ ) {
+            for( int row = 1; row <= rows; row++ ) {
+                for( int col = 1; col <= columns; col++ ) {
                     //grid.put( row, col, rand.nextBoolean() );
+                    //System.out.println(row);
+                   // System.out.println(col);
                     grid.state.put(row, col, rand.nextBoolean());
+                    //System.out.println(grid.state.get(row, col));
                 }
+                //System.out.println("ever outside");
             }
+//            grid.state.put(0, 0, rand.nextBoolean());
+//            System.out.println(grid.state.get(0, 0));
         }
+        //System.out.println("end randomizedGrid");
         return grid; // return
     }
 }
