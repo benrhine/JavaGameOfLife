@@ -4,11 +4,10 @@ import com.benrhine.conway.core.CytoGrid;
 import com.benrhine.conway.core.CytoGridFactory;
 import com.benrhine.conway.services.LifeStream;
 import com.benrhine.conway.services.SistersOfFate;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
+import org.apache.commons.cli.*;
 
 import java.io.File;
+import java.util.LinkedList;
 
 import static java.lang.System.exit;
 
@@ -16,69 +15,78 @@ import static java.lang.System.exit;
  * Created by xtheshadowgod on 2/18/17.
  */
 public class JavaGameOfLife {
-    final static CytoGridFactory cytoGridFactory = new CytoGridFactory();
+    final static CytoGridFactory cytoGridFactory = new CytoGridFactory(null);
     final static SistersOfFate sistersOfFate = new SistersOfFate();
 
-    static void main( String[] args ) {
+    public static void main( String[] args ) {
         Options opts = new Options();
         opts.addOption( "r", "randomize", true, "Start the game with a randomly generated grid of the specified size.  Example: --randomize 12x12" );
         opts.addOption( "f", "file", true, "Start the game with a cell in the specified file." );
         opts.addOption( "g", "generations", true, "The number of generations to print. Defaults to 1");
 
-        DefaultParser cmd = new DefaultParser().parse( opts, args );
+        //CommandLine cmd = new DefaultParser().parse( opts, args );
+        DefaultParser dp = new DefaultParser();
 
-        CytoGrid initialGrid = null;
-        Integer genrations = cmd.getOptionValue( "g", "1" ).toInteger();
+        try {
+            CommandLine cmd = dp.parse( opts, args );
 
-        if( cmd.hasOption( "r" ) && cmd.getOptionValue("r").contains("x") ) {
-            Integer size = cmd.getOptionValue( "r" ).split("x", 2);
-            initialGrid = gridFactory.randomizedGrid( size[0].toInteger(), size[1].toInteger() );
 
-        } else if( cmd.hasOption( "f" ) ) {
+            CytoGrid initialGrid = new CytoGrid();
+            Integer generations = Integer.parseInt(cmd.getOptionValue( "g", "1" ));
+            System.out.println("Incoming number of generations: " + generations);
 
-            //TOOD handle exceptions if file can't be read
-            String string = new File( cmd.getOptionValue( "f" ) )?.text
-                    initialGrid = gridFactory.stringInitializedGrid( string );
-
-        } else {
-            System.err.println( "You must specify either --randomize or --file options" );
-            printUsage( opts );
-            exit(0);
-            return;
-        }
-
-        LifeStream life = new LifeStream( sistersOfFate );
-        life.initialize( initialGrid );
-
-        System.out.println("Initial Population");
-        System.out.println("-----------------------");
-        System.out.println(initialGrid);
-        System.out.println("\n");
-
-        CytoGrid current  = null;
-        CytoGrid previous = initialGrid;
-
-        for( int i = 0; i < genrations; i++ ) {
-
-            current = life.forward(1);
-
-            printGeneration( current, life.generation );
-
-            //Extinction occurs when a grid is produce with no life.
-            if( !current.values().contains( true ) ) {
-                System.out.println("\n\nExtinction occurred at generation ${life.generation}. No more life is possible.\n\n");
-                break;
+            if( cmd.hasOption( "r" ) && cmd.getOptionValue("r").contains("x") ) {
+                String str = cmd.getOptionValue( "r" );
+                String[] size = str.split("x", 2);
+                initialGrid = cytoGridFactory.randomizedGrid(Integer.parseInt(size[0]), Integer.parseInt(size[1]));
+                System.out.println(initialGrid);
+            } else if( cmd.hasOption( "f" ) ) {
+                //TOOD handle exceptions if file can't be read
+                String str = cmd.getOptionValue( "f" );
+                //String string = new File( str ).text;
+                //initialGrid = cytoGridFactory.stringInitializedGrid( string );
+            } else {
+                System.err.println( "You must specify either --randomize or --file options" );
+                printUsage( opts );
+                exit(0);
+                return;
             }
 
-            //Uptopia occurs when cells align in a way that their state will never change.  This is usually represented
-            //by ring formations, where the cell(s) in the center will never have enough neighbors and the ring cells
-            //always have two.
-            if( current == previous ) {
-                System.out.println("\n\nUtopia occurred at generation ${life.generation-1}.  All living cells will live forever, and no more new cells can come to life.");
-                break;
-            }
+            LifeStream life = new LifeStream( sistersOfFate );
+            life.initialize( initialGrid );
 
-            previous = current;
+            System.out.println("Initial Population");
+            System.out.println("-----------------------");
+            System.out.println(initialGrid);
+            System.out.println("\n");
+
+            CytoGrid current;
+            CytoGrid previous = initialGrid;
+
+            for( int i = 0; i < generations; i++ ) {
+
+                current = life.forward(1);
+
+                printGeneration( current, life.getGeneration() );
+
+                //Extinction occurs when a grid is produce with no life.
+                if( !current.getState().containsValue( true ) ) {
+                    System.out.println("\n\nExtinction occurred at generation ${life.generation}. No more life is possible.\n\n");
+                    break;
+                }
+
+                //Uptopia occurs when cells align in a way that their state will never change.  This is usually represented
+                //by ring formations, where the cell(s) in the center will never have enough neighbors and the ring cells
+                //always have two.
+                if( current == previous ) {
+                    System.out.println("\n\nUtopia occurred at generation ${life.generation-1}.  All living cells will live forever, and no more new cells can come to life.");
+                    break;
+                }
+
+                previous = current;
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 
@@ -90,7 +98,7 @@ public class JavaGameOfLife {
      * @return
      */
     private static void printGeneration(CytoGrid grid, Long generation ) {
-        System.out.println("Generation ${generation}");
+        System.out.println("Generation " + generation);
         System.out.println("-----------------");
         System.out.println(grid);
         System.out.println("\n");
@@ -98,6 +106,6 @@ public class JavaGameOfLife {
 
 
     private static void printUsage(Options opts ) {
-        return new HelpFormatter().printHelp( "java -jar game-of-life.jar", opts );
+        new HelpFormatter().printHelp( "java -jar game-of-life.jar", opts );
     }
 }

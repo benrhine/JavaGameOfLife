@@ -54,6 +54,7 @@ public class CytoGridFactory {
             for( int row = 0; row < rows; row++ ) {
                 for( int col = 0; col < columns; col++ ) {
                     //grid.put( row, col, rand.nextBoolean() );
+                    grid.state.put(row, col, rand.nextBoolean());
                 }
             }
         }

@@ -3,6 +3,7 @@ package com.benrhine.conway.core;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import static java.lang.String.join;
@@ -53,10 +54,20 @@ public class CytoGrid {
         return this.columns;
     }
 
-//    @Override
-//    public String toString() {
+    public ArrayTable<Integer, Integer, Boolean> getState() { return this.state; }
+
+    @Override
+    public String toString() {
+        Map<Integer, Map<Integer, Boolean>> rowMap = state.rowMap();
+        String str = "";
+        System.out.println(rowMap);
+
+        for(int i = 0; i < rowMap.keySet().size(); i++) {
+            //str = str + rowMap.get(i).values().toString(); // ? ALIVE_CHAR : NOT_ALIVE_CHAR;
+        }
 //        state.rowMap().collect{ row ->
 //                row.value.collect{ col -> col.value ? ALIVE_CHAR : NOT_ALIVE_CHAR }.join("")
 //        }.join( "\n" );
-//    }
+        return str;
+    }
 }

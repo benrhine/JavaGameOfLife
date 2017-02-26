@@ -20,7 +20,7 @@ public class LifeStream {
         } else {
             this.sistersOfFate  = null;
         }
-        this.history = new LinkedList<CytoGrid>();
+        this.history = new LinkedList<>();
     }
 
     public void initialize( final CytoGrid cytoGrid ) {
@@ -34,9 +34,7 @@ public class LifeStream {
         history.add(initialState);
     }
 
-    public LinkedList<CytoGrid> forward( Integer steps ) {
-        //checkArgument steps > 0, 'steps must be greater than zero'
-
+    public CytoGrid forward( Integer steps ) {
         if( initialState != null ) {
             //TODO IllegalStateException is not the best exception to be throwing
             throw new IllegalStateException( "LifeMachine must be initialized first" );
@@ -48,22 +46,21 @@ public class LifeStream {
                 history.add(transition(history.getLast()));
             }
         }
-
-        history.getLast();
+        return history.getLast();
     }
 
-    public LinkedList<CytoGrid> back( Integer steps ) {
-        //checkArgument steps > 0, 'steps given cannot be less than zero'
-        //checkArgument steps <= history.size(), 'cannot go back more than %d steps', history.size()
-
+    public CytoGrid back( Integer steps ) {
         if(steps != null && steps > 0 && steps <= history.size()) {
             for (int i = 0; i < steps; i++) {
                 generation--;
                 history.removeLast();
             }
         }
+        return history.getLast();
+    }
 
-        history.getLast();
+    public Long getGeneration() {
+        return this.generation;
     }
 
     protected CytoGrid transition( CytoGrid grid ) {
