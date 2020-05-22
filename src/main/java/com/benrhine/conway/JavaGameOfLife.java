@@ -3,11 +3,8 @@ package com.benrhine.conway;
 import com.benrhine.conway.core.CytoGrid;
 import com.benrhine.conway.core.CytoGridFactory;
 import com.benrhine.conway.services.LifeStream;
-import com.benrhine.conway.services.SistersOfFate;
+import com.benrhine.conway.services.CytoFate;
 import org.apache.commons.cli.*;
-
-import java.io.File;
-import java.util.LinkedList;
 
 import static java.lang.System.exit;
 
@@ -16,7 +13,7 @@ import static java.lang.System.exit;
  */
 public class JavaGameOfLife {
     final static CytoGridFactory cytoGridFactory = new CytoGridFactory(null);
-    final static SistersOfFate sistersOfFate = new SistersOfFate();
+    final static CytoFate CYTO_FATE = new CytoFate();
 
     public static void main( String[] args ) {
         Options opts = new Options();
@@ -55,7 +52,7 @@ public class JavaGameOfLife {
             System.out.println(initialGrid);
             System.out.println("\n");
 
-            LifeStream life = new LifeStream( sistersOfFate );
+            LifeStream life = new LifeStream(CYTO_FATE);
             life.initialize( initialGrid );
 
             CytoGrid current;

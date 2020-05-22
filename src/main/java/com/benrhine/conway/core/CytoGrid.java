@@ -9,24 +9,25 @@ import java.util.stream.IntStream;
 import static java.lang.String.join;
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.Lists;
+import groovy.lang.Delegate;
 
 /**
  * Created by xtheshadowgod on 2/18/17.
  */
 public class CytoGrid {
-    static final String ALIVE_CHAR     = "O";
-    static final String NOT_ALIVE_CHAR = ".";
+    public static final String ALIVE_CHAR     = "O";
+    public static final String NOT_ALIVE_CHAR = ".";
 
-    ArrayTable<Integer, Integer, Boolean> state = null;
-    Integer rows = 0;
-    Integer columns = 0;
+    private ArrayTable<Integer, Integer, Boolean> state = null;
+    private int rows = 0;
+    private int cols = 0;
 
     public CytoGrid() { }
 
-    public CytoGrid(final Integer rows, final Integer columns) {
+    public CytoGrid(final int rows, final int columns) {
         if(rows > 0 && columns > 0) {
             this.rows = rows;
-            this.columns = columns;
+            this.cols = columns;
 
             //http://stackoverflow.com/questions/3387373/fill-arrays-with-ranges-of-numbers
             List<Integer> rowsTable  = new ArrayList<Integer>();
@@ -48,20 +49,25 @@ public class CytoGrid {
 
     }
 
-    public Boolean exists( final Integer row, final Integer columns ) {
-        return row >= 0 && row < this.rows && columns >= 0 && columns < this.columns;
+    public Boolean exists( final int row, final int columns ) {
+        return row >= 0 && row < this.rows && columns >= 0 && columns < this.cols;
     }
 
-    public Integer getRows() {
+    public int getRows() {
         return this.rows;
     }
 
-    public Integer getColumns() {
-        return this.columns;
+    public int getCols() {
+        return this.cols;
     }
 
     public ArrayTable<Integer, Integer, Boolean> getState() { return this.state; }
 
+    public void setState(ArrayTable<Integer, Integer, Boolean> state) {
+        this.state = state;
+    }
+
+    //TODO - Upgrade to use Java 8 streams
     @Override
     public String toString() {
         Map<Integer, Map<Integer, Boolean>> rowMap = state.rowMap();

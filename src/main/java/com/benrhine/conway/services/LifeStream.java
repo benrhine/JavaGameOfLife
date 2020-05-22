@@ -9,16 +9,16 @@ import java.util.LinkedList;
  */
 public class LifeStream {
     protected Long generation = 0L;
-    protected SistersOfFate sistersOfFate;
+    protected CytoFate cytoFate;
     protected LinkedList<CytoGrid> history;
 
     protected CytoGrid initialState;
 
-    public LifeStream( SistersOfFate sistersOfFate ) {
-        if(sistersOfFate != null) {
-            this.sistersOfFate  = sistersOfFate;
+    public LifeStream( CytoFate cytoFate) {
+        if(cytoFate != null) {
+            this.cytoFate = cytoFate;
         } else {
-            this.sistersOfFate  = null;
+            this.cytoFate = null;
         }
         this.history = new LinkedList<>();
     }
@@ -65,14 +65,14 @@ public class LifeStream {
 
     protected CytoGrid transition( CytoGrid grid ) {
         final Integer rows = grid.getRows();
-        final Integer columns = grid.getColumns();
+        final Integer columns = grid.getCols();
 
         CytoGrid next = new CytoGrid( rows, columns );
 
         for( int row = 1; row <= rows; row++ ) {
             for( int col = 1; col <= columns; col++ ) {
                 //System.out.println(col);
-                next.getState().put( row, col, sistersOfFate.nextState( grid, row, col ) );
+                next.getState().put( row, col, cytoFate.nextState( grid, row, col ) );
 
             }
             //System.out.println("getting here 1");

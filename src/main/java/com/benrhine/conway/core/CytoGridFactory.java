@@ -1,8 +1,7 @@
 package com.benrhine.conway.core;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -10,7 +9,7 @@ import java.util.stream.IntStream;
  */
 public class CytoGridFactory {
 
-    private Random rand;
+    private final Random rand;
 
     public CytoGridFactory( Random random ) {
         if(random == null) {
@@ -23,51 +22,65 @@ public class CytoGridFactory {
     public CytoGrid stringInitializedGrid( final String gridString ) {
         CytoGrid grid = null;
         if(gridString != null) {
-            //final List input = gridString.split( "\n" ).collect{ String it -> it.trim() };
-            final String[] splitGs = gridString.split( "\n" );
+            final String[] split = gridString.split( "\n" );
             List<String> input = new ArrayList<String>();
-            for (String gs: splitGs) {
-                input.add(gs.trim());
+            for (String s: split) {
+                input.add(s.trim());
             }
-            final Integer rows = input.size();
+            final int rows = input.size();
 
-            //The number of columns is derived from the row with the most characters
-            final Integer cols = 0; //input.size().max();
+            final List<Integer> lineLength = new ArrayList<>();
+            for (String str : input) {
+                lineLength.add(str.length());
+            }
+
+            final int cols = Collections.max(lineLength);
 
             grid = new CytoGrid( rows, cols );
-//            input.eachWithIndex{ String row, Integer rowNum ->
-//                    row.padRight( cols, "." ).toList().eachWithIndex{ String ch, Integer colNum ->
-//                    grid.put( rowNum, colNum, CytoGrid.ALIVE_CHAR == ch );
+//            input.eachWithIndex{ String row, int rowNum ->
+//                row.padRight( cols, "." ).toList().eachWithIndex{ String ch, int colNum ->
+//                    grid.put( rowNum, colNum, CytoGrid.ALIVE == ch )
+//                }
 //            }
-//            }
-//            IntStream.range(0, input.size()).forEach(idx -> query.bind(idx, input.get(idx)));
+
+            List<String> collect = IntStream.range(0, input.size())
+                    .mapToObj(index -> input.get(index))
+                    .collect(Collectors.toList());
+
+            for (int i = 0; i < collect.size(); i++) {
+                System.out.println(collect.get(i));
+                char[] chars = collect.get(i).toCharArray();
+                final List<String> stringList = new ArrayList<>();
+                for(char c: chars) {
+                    stringList.add(String.valueOf(c));
+                }
+
+                stringList.forEach(line -> {
+                    System.out.println(line);
+                });
+
+                for (int ii = 0; ii < stringList.size(); ii++) {
+                    String str = stringList.get(ii);
+                    boolean b = CytoGrid.ALIVE_CHAR.equals(str);
+                    grid.getState().put(i+1, ii+1, b);
+                }
+            }
         }
         return grid; // return
     }
 
-    public CytoGrid randomizedGrid( final Integer rows, final Integer columns ) {
-        //System.out.println("randomizedGrid: " + rows + "x" + columns);
-        CytoGrid grid = null;
+    public CytoGrid randomizedGrid( final int rows, final int cols ) {
+        final CytoGrid grid;
 
-        if(rows != null && columns != null) {
-            grid = new CytoGrid( rows, columns );
-            //System.out.println(grid.getRows() + "x" + grid.getColumns());
-            //System.out.println(grid.getState());
+        //if(rows != null && cols != null) {
+            grid = new CytoGrid( rows, cols );
 
-            for( int row = 1; row <= rows; row++ ) {
-                for( int col = 1; col <= columns; col++ ) {
-                    //grid.put( row, col, rand.nextBoolean() );
-                    //System.out.println(row);
-                   // System.out.println(col);
-                    grid.state.put(row, col, rand.nextBoolean());
-                    //System.out.println(grid.state.get(row, col));
+            for( int row = 0; row < rows; row++ ) {
+                for( int col = 0; col < cols; col++ ) {
+                    grid.getState().put( row + 1, col + 1, rand.nextBoolean() );
                 }
-                //System.out.println("ever outside");
             }
-//            grid.state.put(0, 0, rand.nextBoolean());
-//            System.out.println(grid.state.get(0, 0));
-        }
-        //System.out.println("end randomizedGrid");
+        //}
         return grid; // return
     }
 }
