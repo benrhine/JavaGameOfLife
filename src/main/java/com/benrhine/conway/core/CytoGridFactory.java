@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Created by xtheshadowgod on 2/19/17.
+ * @Author Ben Rhine
  */
 public class CytoGridFactory {
 
@@ -37,32 +37,24 @@ public class CytoGridFactory {
             final int cols = Collections.max(lineLength);
 
             grid = new CytoGrid( rows, cols );
-//            input.eachWithIndex{ String row, int rowNum ->
-//                row.padRight( cols, "." ).toList().eachWithIndex{ String ch, int colNum ->
-//                    grid.put( rowNum, colNum, CytoGrid.ALIVE == ch )
-//                }
-//            }
 
-            List<String> collect = IntStream.range(0, input.size())
+            final List<String> collect = IntStream.range(0, input.size())
                     .mapToObj(index -> input.get(index))
                     .collect(Collectors.toList());
 
             for (int i = 0; i < collect.size(); i++) {
-                System.out.println(collect.get(i));
+                //System.out.println(collect.get(i));
                 char[] chars = collect.get(i).toCharArray();
                 final List<String> stringList = new ArrayList<>();
                 for(char c: chars) {
                     stringList.add(String.valueOf(c));
                 }
 
-                stringList.forEach(line -> {
-                    System.out.println(line);
-                });
 
                 for (int ii = 0; ii < stringList.size(); ii++) {
-                    String str = stringList.get(ii);
-                    boolean b = CytoGrid.ALIVE_CHAR.equals(str);
-                    grid.getState().put(i+1, ii+1, b);
+                    final String str = stringList.get(ii);
+                    boolean b = CytoGrid.ALIVE.equals(str);
+                    grid.getState().put(i, ii, b);
                 }
             }
         }
@@ -72,15 +64,13 @@ public class CytoGridFactory {
     public CytoGrid randomizedGrid( final int rows, final int cols ) {
         final CytoGrid grid;
 
-        //if(rows != null && cols != null) {
-            grid = new CytoGrid( rows, cols );
+        grid = new CytoGrid( rows, cols );
 
-            for( int row = 0; row < rows; row++ ) {
-                for( int col = 0; col < cols; col++ ) {
-                    grid.getState().put( row + 1, col + 1, rand.nextBoolean() );
-                }
+        for( int row = 0; row < rows; row++ ) {
+            for( int col = 0; col < cols; col++ ) {
+                grid.getState().put( row, col, rand.nextBoolean() );
             }
-        //}
+        }
         return grid; // return
     }
 }

@@ -1,22 +1,19 @@
 package com.benrhine.conway.core;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
 import static java.lang.String.join;
 import com.google.common.collect.ArrayTable;
-import com.google.common.collect.Lists;
-import groovy.lang.Delegate;
 
 /**
- * Created by xtheshadowgod on 2/18/17.
+ * @Author Ben Rhine
  */
 public class CytoGrid {
-    public static final String ALIVE_CHAR     = "O";
-    public static final String NOT_ALIVE_CHAR = ".";
+    public static final String ALIVE = "O";
+    public static final String DEAD = ".";
 
     private ArrayTable<Integer, Integer, Boolean> state = null;
     private int rows = 0;
@@ -31,13 +28,13 @@ public class CytoGrid {
 
             //http://stackoverflow.com/questions/3387373/fill-arrays-with-ranges-of-numbers
             List<Integer> rowsTable  = new ArrayList<Integer>();
-            int[] range1 = IntStream.iterate(1, n -> {
+            int[] range1 = IntStream.iterate(0, n -> {
                 rowsTable.add(n);
                 return n + 1;
             }).limit(rows).toArray();
 
             List<Integer> colsTable  = new ArrayList<Integer>();
-            int[] range2 = IntStream.iterate(1, n -> {
+            int[] range2 = IntStream.iterate(0, n -> {
                 colsTable.add(n);
                 return n + 1;
             }).limit(columns).toArray();
@@ -70,12 +67,12 @@ public class CytoGrid {
     //TODO - Upgrade to use Java 8 streams
     @Override
     public String toString() {
-        Map<Integer, Map<Integer, Boolean>> rowMap = state.rowMap();
+        final Map<Integer, Map<Integer, Boolean>> rowMap = state.rowMap();
         String str = "";
 
         for(Integer key : rowMap.keySet()) {
             for(Integer key2 : rowMap.get(key).keySet()) {
-                str = str + (rowMap.get(key).get(key2) ? ALIVE_CHAR : NOT_ALIVE_CHAR);
+                str = str + (rowMap.get(key).get(key2) ? ALIVE : DEAD);
             }
             str = str + "\n";
         }

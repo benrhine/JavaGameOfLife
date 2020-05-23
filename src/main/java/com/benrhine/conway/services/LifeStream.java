@@ -2,25 +2,21 @@ package com.benrhine.conway.services;
 
 import com.benrhine.conway.core.CytoGrid;
 
-import java.util.LinkedList;
-
 /**
- * Created by xtheshadowgod on 2/19/17.
+ * @Author Ben Rhine
  */
 public class LifeStream {
+
     protected Long generation = 0L;
     protected CytoFate cytoFate;
-    protected LinkedList<CytoGrid> history;
-
     protected CytoGrid initialState;
 
-    public LifeStream( CytoFate cytoFate) {
+    LifeStream(CytoFate cytoFate) {
         if(cytoFate != null) {
             this.cytoFate = cytoFate;
         } else {
             this.cytoFate = null;
         }
-        this.history = new LinkedList<>();
     }
 
     public void initialize( final CytoGrid cytoGrid ) {
@@ -29,55 +25,32 @@ public class LifeStream {
     }
 
     public void reset() {
-        history.clear();
         generation = 0L;
-        history.add(initialState);
-    }
-
-    public CytoGrid forward( Integer steps ) {
-        if( initialState == null ) {
-            //TODO IllegalStateException is not the best exception to be throwing
-            throw new IllegalStateException( "LifeMachine must be initialized first" );
-        }
-
-        if(steps != null && steps > 0) {
-            for (int i = 0; i < steps; i++) {
-                generation++;
-                history.add(transition(history.getLast()));
-            }
-        }
-        return history.getLast();
-    }
-
-    public CytoGrid back( Integer steps ) {
-        if(steps != null && steps > 0 && steps <= history.size()) {
-            for (int i = 0; i < steps; i++) {
-                generation--;
-                history.removeLast();
-            }
-        }
-        return history.getLast();
     }
 
     public Long getGeneration() {
         return this.generation;
     }
 
-    protected CytoGrid transition( CytoGrid grid ) {
-        final Integer rows = grid.getRows();
-        final Integer columns = grid.getCols();
+    public CytoGrid getInitialState() {
+        return this.initialState;
+    }
 
-        CytoGrid next = new CytoGrid( rows, columns );
+    public CytoFate getCytoFate() {
+        return this.cytoFate;
+    }
 
-        for( int row = 1; row <= rows; row++ ) {
-            for( int col = 1; col <= columns; col++ ) {
-                //System.out.println(col);
+    CytoGrid transition( CytoGrid grid ) {
+        final int rows = grid.getRows();
+        final int columns = grid.getCols();
+
+        final CytoGrid next = new CytoGrid( rows, columns );
+
+        for( int row = 0; row < rows; row++ ) {
+            for( int col = 0; col < columns; col++ ) {
                 next.getState().put( row, col, cytoFate.nextState( grid, row, col ) );
-
             }
-            //System.out.println("getting here 1");
         }
-        //System.out.println("getting here");
         return next;
     }
 }
