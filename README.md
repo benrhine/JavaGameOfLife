@@ -1,4 +1,4 @@
-# JavaGameOfLife
+# JavaGameOfLife ![Java CI with Gradle](https://github.com/benrhine/JavaGameOfLife/workflows/Java%20CI%20with%20Gradle/badge.svg)
 Implementation of Conway's game of life in java
 
 This is a implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway's_Game_of_Life).
