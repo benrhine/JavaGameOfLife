@@ -7,6 +7,7 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: "groovy"
+apply plugin: 'maven'
 apply plugin: 'application'
 apply plugin: 'com.github.johnrengelman.shadow'
 
@@ -36,6 +37,40 @@ dependencies {
 
     testCompile 'org.spockframework:spock-core:1.3-groovy-2.5'
     testRuntime "cglib:cglib-nodep:3.3.0"
+}
+
+install {
+    repositories {
+        mavenInstaller {
+            pom.version = '1.0-SNAPSHOT'
+            pom.groupId = 'com.benrhine.conway'
+            pom.artifactId = 'JavaGameOfLife'
+            pom.project {
+                inceptionYear '2020'
+                licenses {
+                    license {
+                        name 'Ben Rhine'
+                        url 'http://benrhine.com/licenses/license.txt'
+                        distribution 'repo'
+                    }
+                }
+
+
+            }
+
+            pom.whenConfigured { pom ->
+                pom.dependencies.find {dep -> dep.groupId == 'org.codehaus.groovy' && dep.artifactId == 'groovy-all' }.type = 'pom'
+            }
+
+            // no idea why this doesnt add to the pom - must be added before maven build will work
+            pom.whenConfigured { pom ->
+                pom.properties.put("maven.compiler.source", "1.8")
+                pom.properties.put("maven.compiler.target", "1.8")
+            }
+
+            pom.writeTo("~/pom.xml")
+        }
+    }
 }
 
 task 'package'(dependsOn: shadowJar)
