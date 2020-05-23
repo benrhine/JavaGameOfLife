@@ -68,7 +68,7 @@ install {
                 pom.properties.put("maven.compiler.target", "1.8")
             }
 
-            pom.writeTo("~/pom.xml")
+            //pom.writeTo("${mavenPomDir}/${project.group}/${project.name}/pom.xml")
         }
     }
 }
